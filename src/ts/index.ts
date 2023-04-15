@@ -1,18 +1,18 @@
-import {
-    Effect,
-    Engine,
-    FreeCamera,
-    MeshBuilder,
-    PointLight,
-    PostProcess,
-    Scene,
-    Texture,
-    Vector3
-} from "@babylonjs/core";
+import { Engine } from "@babylonjs/core/Engines/engine";
+import { Scene } from "@babylonjs/core/scene";
+import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
+import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
+import { Effect } from "@babylonjs/core/Materials/effect";
+import { PostProcess } from "@babylonjs/core/PostProcesses/postProcess";
+import { Texture } from "@babylonjs/core/Materials/Textures/texture";
+import { PointLight } from "@babylonjs/core/Lights/pointLight";
+import "@babylonjs/core/Materials/standardMaterial";
+import "@babylonjs/core/Loading/loadingScreen";
 
 import "../styles/index.scss";
 
-import invert from "../shaders/invert.glsl";
+import postprocessCode from "../shaders/smallPostProcess.glsl";
 
 const canvas = document.getElementById("renderer") as HTMLCanvasElement;
 canvas.width = window.innerWidth;
@@ -27,11 +27,11 @@ camera.attachControl();
 
 const light = new PointLight("light", new Vector3(-5, 5, 10), scene);
 
-const sphere = MeshBuilder.CreateSphere("sphere", {segments: 32, diameter: 1}, scene);
+const sphere = MeshBuilder.CreateSphere("sphere", { segments: 32, diameter: 1 }, scene);
 sphere.position = new Vector3(0, 0, 10);
 
-Effect.ShadersStore[`InvertFragmentShader`] = invert;
-const invertPostProcess = new PostProcess("invert", "Invert", [], ["textureSampler"], 1, camera, Texture.BILINEAR_SAMPLINGMODE, engine);
+Effect.ShadersStore[`PostProcess1FragmentShader`] = postprocessCode;
+const postProcess = new PostProcess("postProcess1", "PostProcess1", [], ["textureSampler"], 1, camera, Texture.BILINEAR_SAMPLINGMODE, engine);
 
 let clock = 0;
 
@@ -51,5 +51,7 @@ scene.executeWhenReady(() => {
 
 window.addEventListener("resize", () => {
     engine.resize();
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 });
 
