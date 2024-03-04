@@ -16,7 +16,7 @@ const config = {
         path: path.resolve(__dirname, "dist")
     },
     devServer: {
-        open: true,
+        open: false,
         host: "localhost",
         historyApiFallback: false
     },
@@ -59,7 +59,7 @@ const config = {
             {
                 test: /\.(glsl|vs|fs|vert|frag|fx)$/,
                 exclude: /node_modules/,
-                use: ["raw-loader", "glslify-loader"]
+                use: ["ts-shader-loader"]
             }
 
 
